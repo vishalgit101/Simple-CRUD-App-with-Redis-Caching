@@ -57,7 +57,7 @@ Below are screenshots included from the project's `/images` folder.
 
 ![Project Structure](images/annotations.png)
 
-### 🐳 Redis Docker + Postman GET Request
+### 🐳 Redis Docker + Postman GET Request and Database
 
 ![Redis And Postman and Database](images/database.png)
 
