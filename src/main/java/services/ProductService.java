@@ -1,5 +1,8 @@
 package services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -48,6 +51,7 @@ public class ProductService {
 		
 		return new ProductDto(product.getId(), product.getName(), product.getPrice());
 	}
+	
 
 	@CachePut(value = "PRODUCT_CACHE", key = "#result.id")
 	public ProductDto updateProduct(ProductDto productDto) {
@@ -65,24 +69,34 @@ public class ProductService {
 		this.productRepo.deleteById(productId);
 	}
 	
-	// ================================== With CacheManager ============================================
+	// without caching
+	public List<ProductDto> getAll() {
+		List<Product> products = this.productRepo.findAll();
+		
+		List<ProductDto> dtos = new ArrayList<ProductDto>();
+		
+		for(Product product: products) {
+			dtos.add(new ProductDto(product.getId(), product.getName(), product.getPrice()));
+		}
+		
+		return dtos;
+	}
 	
+	// ================================== With CacheManager ============================================
 	public ProductDto createProduct2(ProductDto productDto) {
 		Product product = new Product();
 		product.setName(productDto.getName());
 		product.setPrice(productDto.getPrice());
 		this.productRepo.save(product);
 		
-		
 		ProductDto dto =  new ProductDto(product.getId(), product.getName(), product.getPrice());
 		
 		Cache cache = this.cacheManager.getCache("PRODUCT_CACHE"); // if not exists lazily creates a redis bucket with name products
 		cache.put(dto.getId(), dto); // put in Redis with ID as key
 		return dto;
-		
 		// Similar to: @CachePut(value = "products", key = "#result.id")
 	} 
-
+	
 	public ProductDto getProduct2(Long productId) {
 		
 		// Check in memory cache redis
@@ -92,13 +106,10 @@ public class ProductService {
 		if(cachedProduct != null) {
 			return cachedProduct; // return from Redis
 		}
-		
 		// Not in cache → load from DB
 		Product product = this.productRepo.findById(productId).orElseThrow(()-> new IllegalArgumentException("Cannot find product with product id: " + productId));
-		
-		
+
 		ProductDto dto =  new ProductDto(product.getId(), product.getName(), product.getPrice());
-		
 		// Store in Redis
 		cache.put(productId, dto);
 		return dto;
