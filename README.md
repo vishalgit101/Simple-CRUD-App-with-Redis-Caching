@@ -59,7 +59,7 @@ Below are screenshots included from the project's `/images` folder.
 
 ### 🐳 Redis Docker + Postman GET Request
 
-![Redis And Postman](images/database.png)
+![Redis And Postman and Database](images/database.png)
 
 ### 📥 POST Request
 
@@ -133,12 +133,3 @@ PRODUCT_CACHE::5
 * Docker
 * Postman
 
----
-
-## 📄 License
-
-This project is open-source and free to use.
-
----
-
-Feel free to add more screenshots or extend the documentation as needed!
