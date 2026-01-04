@@ -125,7 +125,7 @@ PRODUCT_CACHE::5
 
 ## 🧰 Technologies Used
 
-* Java 17
+* Java 21
 * Spring Boot
 * Spring Data JPA
 * Spring Cache
